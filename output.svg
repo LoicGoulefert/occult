@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<svg baseProfile="tiny" height="3.08418637cm" version="1.2" viewBox="0 0 116.56767462907332 116.56767381789999" width="3.08418639cm" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:source>vpype read ../pycairo/test.svg occult write output.svg
+</dc:source>
+        <dc:date>2020-07-26T12:30:36.638293</dc:date>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs/>
+  <g fill="none" id="layer1" inkscape:groupmode="layer" inkscape:label="1" stroke="black" style="display:inline">
+    <path d="M73.9010076871,0.0 L116.56767462907332,73.90100768709999 L42.666667557366665,116.56767381789999 L0.0,42.66666694197332 L73.9010076871,0.0"/>
+  </g>
+</svg>
