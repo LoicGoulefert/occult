@@ -20,6 +20,7 @@ setup(
     install_requires=[
         'click',
         'vpype @ git+https://github.com/abey79/vpype.git',
+        'pygeos'
     ],
     entry_points='''
             [vpype.plugins]
