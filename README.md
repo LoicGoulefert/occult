@@ -7,12 +7,12 @@
 
 `vpype line 0 0 5 5 rect 2 2 1 1 show`
 
-![example1]("img/example1.png")
+![example1](img/example1.png)
 
 
 `vpype line 0 0 5 5 rect 2 2 1 1 occult show`
 
-![example2]("img/example2.png")
+![example2](img/example2.png)
 
 
 
