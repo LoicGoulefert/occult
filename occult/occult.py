@@ -4,10 +4,8 @@ import math
 # Third party libs
 import click
 import numpy as np
-from shapely.geometry import Polygon, MultiLineString
-from shapely.ops import unary_union
-from vpype import layer_processor, LineCollection, Length, as_vector
 import pygeos
+from vpype import layer_processor, LineCollection, Length
 
 
 @click.command()
@@ -34,7 +32,8 @@ def occult(lines: LineCollection, tolerance: float) -> LineCollection:
 
         if math.hypot(coords[-1, 0] - coords[0, 0], coords[-1, 1] - coords[0, 1]) < tolerance:
             p = pygeos.polygons(coords)
-            line_arr[:i] = pygeos.set_operations.difference(line_arr[:i], p)
+            idx = pygeos.intersects(line_arr[:i], p)
+            line_arr[:i][idx] = pygeos.set_operations.difference(line_arr[:i][idx], p)
 
     new_lines = LineCollection()
     for geom in line_arr:
