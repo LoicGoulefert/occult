@@ -21,6 +21,17 @@ from vpype import layer_processor, LineCollection, LengthType
 def occult(lines: LineCollection, tolerance: float) -> LineCollection:
     """
     Remove occulted lines.
+
+    The order of the geometries in 'lines' matters, see example below.
+
+    'tolerance' controls the distance tolerance between the first and last points
+    of a geometry to consider it closed.
+
+    Examples:
+        $ vpype line 0 0 5 5 rect 2 2 1 1 occult show  # line is occulted by rect
+
+        $ vpype rect 2 2 1 1 line 0 0 5 5 occult show  # line is NOT occulted by rect,
+        as the line is drawn after the rectangle.
     """
 
     line_arr = np.array(
@@ -31,9 +42,10 @@ def occult(lines: LineCollection, tolerance: float) -> LineCollection:
         coords = pygeos.get_coordinates(line)
 
         if math.hypot(coords[-1, 0] - coords[0, 0], coords[-1, 1] - coords[0, 1]) < tolerance:
+            tree = pygeos.STRtree(line_arr[:i])
             p = pygeos.polygons(coords)
-            idx = pygeos.intersects(line_arr[:i], p)
-            line_arr[:i][idx] = pygeos.set_operations.difference(line_arr[:i][idx], p)
+            geom_idx = tree.query(p, predicate="intersects")
+            line_arr[geom_idx] = pygeos.set_operations.difference(line_arr[geom_idx], p)
 
     new_lines = LineCollection()
     for geom in line_arr:
