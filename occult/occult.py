@@ -5,16 +5,16 @@ import math
 import click
 import numpy as np
 import pygeos
-from vpype import layer_processor, LineCollection, Length
+from vpype import layer_processor, LineCollection, LengthType
 
 
 @click.command()
 @click.option(
     "-t",
     "--tolerance",
-    type=Length(),
+    type=LengthType(),
     default="0.01mm",
-    help="Max distance between start and end point to consider a path closed "
+    help="Max distance between start and end point to consider a path closed"
     "(default: 0.01mm)",
 )
 @layer_processor
