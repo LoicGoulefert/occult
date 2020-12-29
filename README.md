@@ -18,7 +18,7 @@
 
 ## Installation
 
-See the [installation instructions](https://github.com/abey79/vpype/blob/master/INSTALL.md) for information on how
+See the [installation instructions](https://github.com/abey79/vpype#installation) for information on how
 to install `vpype`.
 
 
