@@ -1,6 +1,6 @@
 # base
 click
-git+https://github.com/abey79/vpype#egg=vpype
+vpype
 pygeos
 
 # dev/test
