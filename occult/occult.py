@@ -4,7 +4,9 @@ import math
 # Third party libs
 import click
 import numpy as np
-import pygeos
+from shapely.geometry import LineString, Polygon
+from shapely.geometry.multilinestring import MultiLineString
+from shapely.strtree import STRtree
 from vpype import layer_processor, LineCollection, LengthType
 
 
@@ -28,30 +30,32 @@ def occult(lines: LineCollection, tolerance: float) -> LineCollection:
     of a geometry to consider it closed.
 
     Examples:
-        $ vpype line 0 0 5 5 rect 2 2 1 1 occult show  # line is occulted by rect
-
-        $ vpype rect 2 2 1 1 line 0 0 5 5 occult show  # line is NOT occulted by rect,
+        $ vpype line 0 0 5 5 rect 2 2 1 1 occult show  # line is occulted by rect
+        $ vpype rect 2 2 1 1 line 0 0 5 5 occult show  # line is NOT occulted by rect,
         as the line is drawn after the rectangle.
     """
 
-    line_arr = np.array(
-        [pygeos.linestrings(list(zip(line.real, line.imag))) for line in lines]
-    )
+    line_arr = [line for line in lines.as_mls()]
 
     for i, line in enumerate(line_arr):
-        coords = pygeos.get_coordinates(line)
+        coords = np.array(line.coords)
 
         if math.hypot(coords[-1, 0] - coords[0, 0], coords[-1, 1] - coords[0, 1]) < tolerance:
-            tree = pygeos.STRtree(line_arr[:i])
-            p = pygeos.polygons(coords)
-            geom_idx = tree.query(p, predicate="intersects")
-            line_arr[geom_idx] = pygeos.set_operations.difference(line_arr[geom_idx], p)
+            # Build R-tree from previous geometries
+            tree = STRtree(line_arr[:i])
+            p = Polygon(coords)
+            geom_idx = [line_arr.index(g) for g in tree.query(p)]
+
+            # Update previous geometries
+            for gi in geom_idx:
+                line_arr[gi] = line_arr[gi].difference(p)
 
     new_lines = LineCollection()
-    for geom in line_arr:
-        for i in range(pygeos.get_num_geometries(geom)):
-            coords = pygeos.get_coordinates(pygeos.get_geometry(geom, i))
-            new_lines.append(coords[:, 0] + coords[:, 1] * 1j)
+    for line in line_arr:
+        if isinstance(line, LineString):
+            new_lines.append(line)
+        elif isinstance(line, MultiLineString):
+            new_lines.extend(line)
 
     return new_lines
 
