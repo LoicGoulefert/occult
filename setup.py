@@ -19,7 +19,7 @@ setup(
     packages=["occult"],
     install_requires=[
         'click',
-        'vpype @ git+https://github.com/abey79/vpype.git',
+        'vpype',
         'pygeos'
     ],
     entry_points='''
