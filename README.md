@@ -5,12 +5,12 @@
 
 ## Examples
 
-`vpype line 0 0 5 5 rect 2 2 1 1 show`
+`vpype line 0 0 5cm 5cm rect 2cm 2cm 1cm 1cm show`
 
 ![example1](img/example1.png)
 
 
-`vpype line 0 0 5 5 rect 2 2 1 1 occult show`
+`vpype line 0 0 5cm 5cm rect 2cm 2cm 1cm 1cm occult show`
 
 ![example2](img/example2.png)
 
