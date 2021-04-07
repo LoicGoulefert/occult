@@ -28,7 +28,7 @@ Use this method if you have an existing `vpype` installation (typically in an ex
 want to make this plug-in available. You must activate your virtual environment beforehand.
 
 ```bash
-$ pip install git+https://github.com/abey79/occult.git#egg=occult
+$ pip install git+https://github.com/LoicGoulefert/occult.git#egg=occult
 ```
 
 Check that your install is successful:
@@ -54,7 +54,7 @@ Commands:
 Use this method if you need to edit this project. First, clone the project:
 
 ```bash
-$ git clone https://github.com/abey79/occult.git
+$ git clone https://github.com/LoicGoulefert/occult.git
 $ cd occult
 ```
 
