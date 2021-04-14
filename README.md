@@ -1,6 +1,6 @@
 # occult
 
-[`vpype`](https://github.com/abey79/vpype) plug-in to remove occulted lines from SVG files.
+[`vpype`](https://github.com/abey79/vpype) plug-in to remove lines occulted by polygons from SVG files.
 
 
 ## Examples
