@@ -98,16 +98,30 @@ def occult(
 ) -> vpype.Document:
     """
     Remove lines occulted by polygons.
+    The 'keep_occulted' option (-k, --keep-occulted) saves removed geometries in a new layer.
+    The order of the geometries in 'lines' matters, see basic example below.
+    Occlusion is performed layer by layer. This means that if one geometry is occulting another,
+    and these geometries are not in the same layer, occult won't remove occulted paths.
 
-    The order of the geometries in 'lines' matters, see example below.
-
-    'tolerance' controls the distance tolerance between the first and last points
-    of a geometry to consider it closed.
+    Options:
+        document: the vpype.Document to work on.
+        tolerance: controls the distance tolerance between the first and last points
+        of a geometry to consider it closed.
+        layer: specify which layer(s) to work on. Default: all.
+        keep_occulted: If set, this flag allows to save removed lines in a separate layer.
 
     Examples:
-        $ vpype line 0 0 5 5 rect 2 2 1 1 occult show  # line is occulted by rect
-        $ vpype rect 2 2 1 1 line 0 0 5 5 occult show  # line is NOT occulted by rect,
-        as the line is drawn after the rectangle.
+
+        - Basic usage:
+            $ vpype line 0 0 5cm 5cm rect 2cm 2cm 1cm 1cm occult show  # line is occulted by rect
+            $ vpype rect 2cm 2cm 1cm 1cm line 0 0 5cm 5cm occult show  # line is NOT occulted by rect,
+            as the line is drawn after the rectangle.
+
+        - Keep occulted lines in a separate layer:
+            $ vpype line -- -3cm 0 8cm 0  circle 0 0 3cm  circle -l 2 5cm 0 3cm occult -k show
+            # 'occult -k' will remove the path inside the first circle, and put it in a third layer.
+            # both the first circle and the line are not affected by the second circle, as it is
+            # in a different layer.
     """
 
     new_document = document.empty_copy()
