@@ -5,14 +5,52 @@
 
 ## Examples
 
+
+### Basic usage
+
+Draw a line, then a square:
+
+
 `vpype line 0 0 5cm 5cm rect 2cm 2cm 1cm 1cm show`
 
-![example1](img/example1.png)
+<img src="img/example1.png" width="250" height="250">
+
+
+Same drawing, after applying `occult`:
 
 
 `vpype line 0 0 5cm 5cm rect 2cm 2cm 1cm 1cm occult show`
 
-![example2](img/example2.png)
+<img src="img/example2.png" width="250" height="250">
+
+
+Order of path is important: `occult` will consider the last geometry in a SVG file to be "on top" of all other geometries,
+the last but one is above every other geometries except the last one.
+For instance, using `vpype rect 2cm 2cm 1cm 1cm occult show` will not modify geometries.
+
+
+### Working with multiple layers
+
+
+`occult` performs occlusion layer by layer. For instance, applying occlusion on the image below
+will not change anything:
+
+<img src="img/example3.png" width="40%" height="40%">
+
+
+### Save occulted lines
+
+`occult -k` keeps occulted lines in a separate layers.
+
+- Without `-k` flag  
+<img src=img/example5.png width="40%" height="40%">
+
+
+- With `-k` flag  
+<img src=img/example6.png width="40%" height="40%">
+
+
+Using vpype's viewer (`show` command), you can visualize occulted lines and remaining lines separately.
 
 
 
