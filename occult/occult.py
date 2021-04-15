@@ -103,7 +103,7 @@ def occult(
     Occlusion is performed layer by layer. This means that if one geometry is occulting another,
     and these geometries are not in the same layer, occult won't remove occulted paths.
 
-    Options:
+    Args:
         document: the vpype.Document to work on.
         tolerance: controls the distance tolerance between the first and last points
         of a geometry to consider it closed.
