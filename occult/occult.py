@@ -44,7 +44,11 @@ def _occult_layer(
     for i, line in enumerate(line_arr):
         coords = np.array(line.coords)
 
-        if math.hypot(coords[-1, 0] - coords[0, 0], coords[-1, 1] - coords[0, 1]) < tolerance:
+        if (
+            len(coords) > 3
+            and math.hypot(coords[-1, 0] - coords[0, 0], coords[-1, 1] - coords[0, 1])
+            < tolerance
+        ):
             # Build R-tree from previous geometries
             tree = STRtree(line_arr[:i])
             p = Polygon(coords)
