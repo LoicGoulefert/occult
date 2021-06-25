@@ -14,7 +14,7 @@ import vpype
 
 def add_to_linecollection(lc, line):
     """Helper function to add a LineString or a MultiLineString to a LineCollection"""
-    if isinstance(line, LineString):
+    if isinstance(line, LineString) and len(line.coords) != 0:
         lc.append(line)
     elif isinstance(line, MultiLineString):
         lc.extend(line)
