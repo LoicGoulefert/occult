@@ -53,11 +53,11 @@ with a smaller ID number.
 `occult -k` keeps occulted lines in a separate layers.
 
 - Without `-k` flag  
-<img src=img/example5.png width="40%" height="40%">
+<img src="img/example5.png" width="40%" height="40%">
 
 
 - With `-k` flag  
-<img src=img/example6.png width="40%" height="40%">
+<img src="img/example6.png" width="40%" height="40%">
 
 
 Using vpype's viewer (`show` command), you can visualize occulted lines and remaining lines separately.
