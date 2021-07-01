@@ -45,9 +45,9 @@ def _occult_layer(
 
     line_arr = []
     line_arr_lines = []
-    for l_id in sorted(layers.keys()):
-        line_arr.extend([[l_id, line] for line in layers[l_id].as_mls()])
-        line_arr_lines.extend([line for line in layers[l_id].as_mls()])
+    for l_id, lines in layers.items():
+        line_arr.extend([[l_id, line] for line in lines.as_mls()])
+        line_arr_lines.extend([line for line in lines.as_mls()])
 
     for i, (l_id, line) in enumerate(line_arr):
         coords = np.array(line.coords)
@@ -160,9 +160,9 @@ def occult(
 
     for layer in layers:
         lines, removed_lines = _occult_layer(layer, tolerance, keep_occulted)
-        
-        for l_id in sorted(lines.keys()):
-            new_document.add(lines[l_id], layer_id=l_id)
+
+        for l_id, occulted_lines in lines.items():
+            new_document.add(occulted_lines, layer_id=l_id)
 
         if keep_occulted and not removed_lines.is_empty():
             new_document.add(removed_lines, layer_id=removed_layer_id)
