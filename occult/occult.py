@@ -23,49 +23,57 @@ def add_to_linecollection(lc, line):
 
 
 def _occult_layer(
-    lines: LineCollection, tolerance: float, keep_occulted: bool = False
-) -> LineCollection:
+    layers: dict[int, LineCollection], tolerance: float, keep_occulted: bool = False
+) -> tuple[dict[int, LineCollection], LineCollection]:
     """
-    Perform per-layer occlusion. Optionally returns occulted lines
+    Perform occlusion on all provided layers. Optionally returns occulted lines
     in a separate LineCollection.
 
     Args:
-        lines: LineCollection to perform occlusion on
+        layers: dictionary of LineCollections to perform occlusion on, keyed by layer ID
         tolerance: Max distance between start and end point to consider a path closed
         keep_occulted: if True, save removed lines in removed_lines LineCollection.
         Otherwise, removed_lines is an empty LineCollection.
 
     Returns:
-        a tuple of LineCollections, (new_lines, removed_lines)
+        a tuple with two items:
+        - new_lines, a dictionary of LineCollections for each layer ID received
+        - removed_lines, a LineCollection of removed lines
     """
     removed_lines = LineCollection()
-    line_arr = [line for line in lines.as_mls()]
+    new_lines = {l_id: LineCollection() for l_id in layers}
 
-    for i, line in enumerate(line_arr):
+    line_arr = []
+    line_arr_lines = []
+    for l_id, lines in layers.items():
+        line_arr.extend([[l_id, line] for line in lines.as_mls()])
+        line_arr_lines.extend([line for line in lines.as_mls()])
+
+    for i, (l_id, line) in enumerate(line_arr):
         coords = np.array(line.coords)
 
-        if (
+        if not (
             len(coords) > 3
             and math.hypot(coords[-1, 0] - coords[0, 0], coords[-1, 1] - coords[0, 1])
             < tolerance
-        ):
-            # Build R-tree from previous geometries
-            tree = STRtree(line_arr[:i])
-            p = Polygon(coords)
-            geom_idx = [line_arr.index(g) for g in tree.query(p)]
+        ): continue
 
-            for gi in geom_idx:
-                # Aggregate removed lines
-                if keep_occulted:
-                    rl = p.intersection(line_arr[gi])
-                    add_to_linecollection(removed_lines, rl)
+        # Build R-tree from previous geometries
+        tree = STRtree(line_arr_lines[:i])
+        p = Polygon(coords)
+        geom_idx = [line_arr_lines.index(g) for g in tree.query(p)]
 
-                # Update previous geometries
-                line_arr[gi] = line_arr[gi].difference(p)
+        for gi in geom_idx:
+            # Aggregate removed lines
+            if keep_occulted:
+                rl = p.intersection(line_arr_lines[gi])
+                add_to_linecollection(removed_lines, rl)
 
-    new_lines = LineCollection()
-    for line in line_arr:
-        add_to_linecollection(new_lines, line)
+            # Update previous geometries
+            line_arr[gi][1] = line_arr[gi][1].difference(p)
+
+    for (l_id, line) in line_arr:
+        add_to_linecollection(new_lines[l_id], line)
 
     return new_lines, removed_lines
 
@@ -93,12 +101,20 @@ def _occult_layer(
     default="all",
     help="Target layer(s).",
 )
+@click.option(
+    "-i",
+    "--ignore-layers",
+    is_flag=True,
+    default=False,
+    help="Ignore layers when performing occlusion"
+)
 @global_processor
 def occult(
     document: vpype.Document,
     tolerance: float,
     layer: Optional[Union[int, List[int]]],
     keep_occulted: bool = False,
+    ignore_layers: bool = False
 ) -> vpype.Document:
     """
     Remove lines occulted by polygons.
@@ -106,6 +122,8 @@ def occult(
     The order of the geometries in 'lines' matters, see basic example below.
     Occlusion is performed layer by layer. This means that if one geometry is occulting another,
     and these geometries are not in the same layer, occult won't remove occulted paths.
+    With the 'ignore_layers' option, occlusion is performed on all geometry regardless
+    of layers, with higher-numbered layers occluding lower-numbered layers.
 
     Args:
         document: the vpype.Document to work on.
@@ -113,6 +131,9 @@ def occult(
         of a geometry to consider it closed.
         layer: specify which layer(s) to work on. Default: all.
         keep_occulted: If set, this flag allows to save removed lines in a separate layer.
+        ignore_layers: If set, this flag causes occult to treat all geometries as if they
+        exist on the same layer. However, all geometries in the final result
+        remain on their original layer.
 
     Examples:
 
@@ -132,9 +153,16 @@ def occult(
     layer_ids = multiple_to_layer_ids(layer, document)
     removed_layer_id = document.free_id()
 
-    for lines, l_id in zip(document.layers_from_ids(layer_ids), layer_ids):
-        lines, removed_lines = _occult_layer(lines, tolerance, keep_occulted)
-        new_document.add(lines, layer_id=l_id)
+    if ignore_layers:
+        layers = [{l_id: list(document.layers_from_ids([l_id]))[0] for l_id in layer_ids}]
+    else:
+        layers = [{l_id: list(document.layers_from_ids([l_id]))[0]} for l_id in layer_ids]
+
+    for layer in layers:
+        lines, removed_lines = _occult_layer(layer, tolerance, keep_occulted)
+
+        for l_id, occulted_lines in lines.items():
+            new_document.add(occulted_lines, layer_id=l_id)
 
         if keep_occulted and not removed_lines.is_empty():
             new_document.add(removed_lines, layer_id=removed_layer_id)

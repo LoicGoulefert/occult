@@ -32,10 +32,20 @@ For instance, using `vpype rect 2cm 2cm 1cm 1cm occult show` will not modify geo
 ### Working with multiple layers
 
 
-`occult` performs occlusion layer by layer. For instance, applying occlusion on the image below
-will not change anything:
+By default, `occult` performs occlusion layer by layer. For instance, applying occlusion
+on the image below will not change anything:
 
 <img src="img/example3.png" width="40%" height="40%">
+
+`occult -i` ignores layers, so that occlusion is performed on all objects, regardless of their layer.
+Geometries in layers with a larger ID number are considered to be "on top" of geometries in layers
+with a smaller ID number.
+
+- Without `-i` flag
+<img src="img/example7.png" width="40%" height="40%">
+
+- With `-i` flag
+<img src="img/example8.png" width="40%" height="40%">
 
 
 ### Save occulted lines
@@ -43,11 +53,11 @@ will not change anything:
 `occult -k` keeps occulted lines in a separate layers.
 
 - Without `-k` flag  
-<img src=img/example5.png width="40%" height="40%">
+<img src="img/example5.png" width="40%" height="40%">
 
 
 - With `-k` flag  
-<img src=img/example6.png width="40%" height="40%">
+<img src="img/example6.png" width="40%" height="40%">
 
 
 Using vpype's viewer (`show` command), you can visualize occulted lines and remaining lines separately.
