@@ -1,6 +1,6 @@
 # Standard libs
 import math
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Dict, Tuple
 
 # Third party libs
 import click
@@ -23,8 +23,8 @@ def add_to_linecollection(lc, line):
 
 
 def _occult_layer(
-    layers: dict[int, LineCollection], tolerance: float, keep_occulted: bool = False
-) -> tuple[dict[int, LineCollection], LineCollection]:
+    layers: Dict[int, LineCollection], tolerance: float, keep_occulted: bool = False
+) -> Tuple[Dict[int, LineCollection], LineCollection]:
     """
     Perform occlusion on all provided layers. Optionally returns occulted lines
     in a separate LineCollection.
@@ -56,7 +56,8 @@ def _occult_layer(
             len(coords) > 3
             and math.hypot(coords[-1, 0] - coords[0, 0], coords[-1, 1] - coords[0, 1])
             < tolerance
-        ): continue
+        ):
+            continue
 
         # Build R-tree from previous geometries
         tree = STRtree(line_arr_lines[:i])
@@ -106,7 +107,7 @@ def _occult_layer(
     "--ignore-layers",
     is_flag=True,
     default=False,
-    help="Ignore layers when performing occlusion"
+    help="Ignore layers when performing occlusion",
 )
 @global_processor
 def occult(
@@ -114,7 +115,7 @@ def occult(
     tolerance: float,
     layer: Optional[Union[int, List[int]]],
     keep_occulted: bool = False,
-    ignore_layers: bool = False
+    ignore_layers: bool = False,
 ) -> vpype.Document:
     """
     Remove lines occulted by polygons.
