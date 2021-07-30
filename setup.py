@@ -18,12 +18,11 @@ setup(
     license=license,
     packages=["occult"],
     install_requires=[
-        'click',
-        'vpype',
-        'pygeos'
+        "click",
+        "vpype",
     ],
-    entry_points='''
+    entry_points="""
             [vpype.plugins]
             occult=occult.occult:occult
-        ''',
+        """,
 )
