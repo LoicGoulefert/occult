@@ -1,6 +1,5 @@
 # Standard libs
 import math
-from pstats import SortKey
 from typing import Dict, List, Optional, Tuple, Union
 
 # Third party libs
