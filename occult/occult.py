@@ -1,5 +1,7 @@
 # Standard libs
+import cProfile
 import math
+from pstats import SortKey
 from typing import Dict, List, Optional, Tuple, Union
 
 # Third party libs
@@ -9,6 +11,7 @@ import vpype
 from shapely.geometry import LineString, Polygon
 from shapely.geometry.multilinestring import MultiLineString
 from shapely.strtree import STRtree
+from tqdm import tqdm
 from vpype import LengthType, LineCollection, global_processor, multiple_to_layer_ids
 
 
@@ -49,7 +52,7 @@ def _occult_layer(
         line_arr.extend([[l_id, line] for line in lines.as_mls()])
         line_arr_lines.extend([line for line in lines.as_mls()])
 
-    for i, (l_id, line) in enumerate(line_arr):
+    for i, (l_id, line) in enumerate(tqdm(line_arr)):
         coords = np.array(line.coords)
 
         if not (
@@ -152,6 +155,8 @@ def occult(
     new_document = document.empty_copy()
     layer_ids = multiple_to_layer_ids(layer, document)
     removed_layer_id = document.free_id()
+    pr = cProfile.Profile()
+    pr.enable()
 
     if ignore_layers:
         layers = [{l_id: list(document.layers_from_ids([l_id]))[0] for l_id in layer_ids}]
@@ -167,6 +172,10 @@ def occult(
         if keep_occulted and not removed_lines.is_empty():
             new_document.add(removed_lines, layer_id=removed_layer_id)
 
+    pr.disable()
+    pr.create_stats()
+    pr.dump_stats("../pr-dump.stats")
+    # gprof2dot -f pstats pr-dump | dot -Tpng -o profile-out.png
     return new_document
 
 
