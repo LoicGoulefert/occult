@@ -49,6 +49,10 @@ def _occult_layer(
         line_arr.extend([[l_id, line] for line in lines.as_mls()])
         line_arr_lines.extend([line for line in lines.as_mls()])
 
+    # Build R-tree from previous geometries
+    tree = STRtree(line_arr_lines)
+    index_by_id = dict((id(pt), i) for i, pt in enumerate(line_arr_lines))
+
     for i, (l_id, line) in enumerate(line_arr):
         coords = np.array(line.coords)
 
@@ -59,10 +63,9 @@ def _occult_layer(
         ):
             continue
 
-        # Build R-tree from previous geometries
-        tree = STRtree(line_arr_lines[:i])
         p = Polygon(coords)
-        geom_idx = [line_arr_lines.index(g) for g in tree.query(p)]
+        geom_idx = [index_by_id[id(g)] for g in tree.query(p)]
+        geom_idx = [idx for idx in geom_idx if idx < i]
 
         for gi in geom_idx:
             # Aggregate removed lines
