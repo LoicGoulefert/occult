@@ -1,15 +1,15 @@
 # Standard libs
 import math
-from typing import Union, List, Optional, Dict, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 # Third party libs
 import click
 import numpy as np
+import vpype
 from shapely.geometry import LineString, Polygon
 from shapely.geometry.multilinestring import MultiLineString
 from shapely.strtree import STRtree
-from vpype import global_processor, LineCollection, LengthType, multiple_to_layer_ids
-import vpype
+from vpype import LengthType, LineCollection, global_processor, multiple_to_layer_ids
 
 
 def add_to_linecollection(lc, line):
@@ -149,7 +149,6 @@ def occult(
             # both the first circle and the line are not affected by the second circle, as it is
             # in a different layer.
     """
-
     new_document = document.empty_copy()
     layer_ids = multiple_to_layer_ids(layer, document)
     removed_layer_id = document.free_id()
