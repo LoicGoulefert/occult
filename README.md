@@ -63,6 +63,35 @@ with a smaller ID number.
 Using vpype's viewer (`show` command), you can visualize occulted lines and remaining lines separately.
 
 
+## Using occult with Vsketch
+
+`occult` can be invoked from a [Vksetch](https://vsketch.readthedocs.io/en/latest/) sketch, using `vsk.vpype("occult")`. When using the GUI, calling `occult` within the sketch `draw()` method will display occulted geometries at each code save / seed change. For sketches with lots of geometries, occlusion can take a significant amount of time. Invoke `occult` within the `finalize()` method of a sketch to perform occlusion only when saving a specific output.
+
+
+```
+import vsketch
+
+class Sketch(vsketch.SketchClass):
+    def draw(self, vsk: vsketch.Vsketch):
+        vsk.size('10x10cm')
+        vsk.scale('mm')
+        
+        vsk.line(-5, -5, 5, 5)
+        vsk.circle(0, 0, 3)
+
+        # Uncomment to perform occlusion at every GUI reload
+        # vsk.vpype("occult")
+  
+    def finalize(self, vsk: vsketch.Vsketch) -> None:
+        # Occlusion (and other vpype commands) invoked only when saving
+        vsk.vpype("linesimplify occult linemerge linesort")
+
+
+if __name__ == "__main__":
+    Sketch.display()
+```
+
+
 
 ## Installation
 
