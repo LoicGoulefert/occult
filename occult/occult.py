@@ -46,8 +46,8 @@ def _occult_layer(
     line_arr = []
     line_arr_lines = []
     for l_id, lines in layers.items():
-        line_arr.extend([[l_id, line] for line in lines.as_mls()])
-        line_arr_lines.extend([line for line in lines.as_mls()])
+        line_arr.extend([[l_id, line] for line in lines.as_mls().geoms])
+        line_arr_lines.extend([line for line in lines.as_mls().geoms])
 
     # Build R-tree from previous geometries
     tree = STRtree(line_arr_lines)
