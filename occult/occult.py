@@ -112,6 +112,13 @@ def _occult_layer(
     default=False,
     help="Ignore layers when performing occlusion",
 )
+@click.option(
+    "-r",
+    "--reverse",
+    is_flag=True,
+    default=False,
+    help="Reverse geometry order",
+)
 @global_processor
 def occult(
     document: vpype.Document,
@@ -119,6 +126,7 @@ def occult(
     layer: Optional[Union[int, List[int]]],
     keep_occulted: bool = False,
     ignore_layers: bool = False,
+    reverse: bool = False,
 ) -> vpype.Document:
     """
     Remove lines occulted by polygons.
@@ -160,6 +168,11 @@ def occult(
         layers = [{l_id: list(document.layers_from_ids([l_id]))[0] for l_id in layer_ids}]
     else:
         layers = [{l_id: list(document.layers_from_ids([l_id]))[0]} for l_id in layer_ids]
+
+    if reverse:
+        for layer in layers:
+            for key in layer:
+                layer[key].reverse()
 
     for layer in layers:
         lines, removed_lines = _occult_layer(layer, tolerance, keep_occulted)
