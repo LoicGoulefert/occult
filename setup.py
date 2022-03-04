@@ -19,7 +19,7 @@ setup(
     packages=["occult"],
     install_requires=[
         "click",
-        "vpype",
+        "vpype>=1.9,<2.0",
     ],
     entry_points="""
             [vpype.plugins]

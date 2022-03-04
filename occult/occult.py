@@ -5,11 +5,10 @@ from typing import Dict, List, Optional, Tuple, Union
 # Third party libs
 import click
 import numpy as np
-import vpype
-from shapely.geometry import LineString, Polygon
-from shapely.geometry.multilinestring import MultiLineString
+import vpype as vp
+import vpype_cli
+from shapely.geometry import LineString, Polygon, MultiLineString
 from shapely.strtree import STRtree
-from vpype import LengthType, LineCollection, global_processor, multiple_to_layer_ids
 
 
 def add_to_linecollection(lc, line):
@@ -23,8 +22,8 @@ def add_to_linecollection(lc, line):
 
 
 def _occult_layer(
-    layers: Dict[int, LineCollection], tolerance: float, keep_occulted: bool = False
-) -> Tuple[Dict[int, LineCollection], LineCollection]:
+    layers: Dict[int, vp.LineCollection], tolerance: float, keep_occulted: bool = False
+) -> Tuple[Dict[int, vp.LineCollection], vp.LineCollection]:
     """
     Perform occlusion on all provided layers. Optionally returns occulted lines
     in a separate LineCollection.
@@ -40,8 +39,8 @@ def _occult_layer(
         - new_lines, a dictionary of LineCollections for each layer ID received
         - removed_lines, a LineCollection of removed lines
     """
-    removed_lines = LineCollection()
-    new_lines = {l_id: LineCollection() for l_id in layers}
+    removed_lines = vp.LineCollection()
+    new_lines = {l_id: vp.LineCollection() for l_id in layers}
 
     line_arr = []
     line_arr_lines = []
@@ -86,7 +85,7 @@ def _occult_layer(
 @click.option(
     "-t",
     "--tolerance",
-    type=LengthType(),
+    type=vpype_cli.LengthType(),
     default="0.01mm",
     help="Max distance between start and end point to consider a path closed"
     "(default: 0.01mm)",
@@ -101,7 +100,7 @@ def _occult_layer(
 @click.option(
     "-l",
     "--layer",
-    type=vpype.LayerType(accept_multiple=True),
+    type=vpype_cli.LayerType(accept_multiple=True),
     default="all",
     help="Target layer(s).",
 )
@@ -119,15 +118,15 @@ def _occult_layer(
     default=False,
     help="Reverse geometry order",
 )
-@global_processor
+@vpype_cli.global_processor
 def occult(
-    document: vpype.Document,
+    document: vp.Document,
     tolerance: float,
     layer: Optional[Union[int, List[int]]],
     keep_occulted: bool = False,
     ignore_layers: bool = False,
     reverse: bool = False,
-) -> vpype.Document:
+) -> vp.Document:
     """
     Remove lines occulted by polygons.
     The 'keep_occulted' option (-k, --keep-occulted) saves removed geometries in a new layer.
@@ -161,7 +160,7 @@ def occult(
             # in a different layer.
     """
     new_document = document.empty_copy()
-    layer_ids = multiple_to_layer_ids(layer, document)
+    layer_ids = vpype_cli.multiple_to_layer_ids(layer, document)
     removed_layer_id = document.free_id()
 
     if ignore_layers:
