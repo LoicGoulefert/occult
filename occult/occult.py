@@ -63,6 +63,10 @@ def _occult_layer(
             continue
 
         p = Polygon(coords)
+
+        if not p.is_valid:
+            continue
+
         geom_idx = [index_by_id[id(g)] for g in tree.query(p)]
         geom_idx = [idx for idx in geom_idx if idx < i]
 
