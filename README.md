@@ -101,8 +101,13 @@ to install `vpype`.
 
 ### Existing `vpype` installation
 
-Use this method if you have an existing `vpype` installation (typically in an existing virtual environment) and you
-want to make this plug-in available. You must activate your virtual environment beforehand.
+If *vpype* was installed using pipx, use the following command:
+
+```bash
+$ pipx inject vpype git+https://github.com/LoicGoulefert/occult
+```
+
+If *vpype* was installed using pip in a virtual environment, activate the virtual environment and use the following command:
 
 ```bash
 $ pip install git+https://github.com/LoicGoulefert/occult.git#egg=occult
