@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
 ## Installation
 
-See the [installation instructions](https://github.com/abey79/vpype#installation) for information on how
+See the [installation instructions](https://vpype.readthedocs.io/en/latest/install.html) for information on how
 to install `vpype`.
 
 
