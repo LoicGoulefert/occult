@@ -7,7 +7,7 @@ import click
 import numpy as np
 import vpype as vp
 import vpype_cli
-from shapely.geometry import LineString, Polygon, MultiLineString
+from shapely.geometry import LineString, MultiLineString, Polygon
 from shapely.strtree import STRtree
 
 
@@ -163,7 +163,7 @@ def occult(
             # both the first circle and the line are not affected by the second circle, as it is
             # in a different layer.
     """
-    new_document = document.empty_copy()
+    new_document = document.empty_copy(keep_layers=True)
     layer_ids = vpype_cli.multiple_to_layer_ids(layer, document)
     removed_layer_id = document.free_id()
 
