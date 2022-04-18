@@ -7,7 +7,7 @@ with open("LICENSE") as f:
     license = f.read()
 
 setup(
-    name="occult",
+    name="vpype-occult",
     version="0.1.0",
     description="Occlusion plug-in for vpype",
     long_description=readme,
