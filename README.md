@@ -104,13 +104,13 @@ to install `vpype`.
 If *vpype* was installed using pipx, use the following command:
 
 ```bash
-$ pipx inject vpype git+https://github.com/LoicGoulefert/occult
+$ pipx inject vpype vpype-occult
 ```
 
 If *vpype* was installed using pip in a virtual environment, activate the virtual environment and use the following command:
 
 ```bash
-$ pip install git+https://github.com/LoicGoulefert/occult.git#egg=occult
+$ pip install vpype-occult
 ```
 
 Check that your install is successful:
