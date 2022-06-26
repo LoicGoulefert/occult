@@ -166,18 +166,19 @@ def occult(
     new_document = document.empty_copy(keep_layers=True)
     layer_ids = vpype_cli.multiple_to_layer_ids(layer, document)
     removed_layer_id = document.free_id()
+    all_layers = document.layers
 
     if ignore_layers:
-        layers = [{l_id: list(document.layers_from_ids([l_id]))[0] for l_id in layer_ids}]
+        active_layers = [{l_id: list(document.layers_from_ids([l_id]))[0] for l_id in layer_ids}]
     else:
-        layers = [{l_id: list(document.layers_from_ids([l_id]))[0]} for l_id in layer_ids]
+        active_layers = [{l_id: list(document.layers_from_ids([l_id]))[0]} for l_id in layer_ids]
 
     if reverse:
-        for layer in layers:
+        for layer in active_layers:
             for key in layer:
                 layer[key].reverse()
 
-    for layer in layers:
+    for layer in active_layers:
         lines, removed_lines = _occult_layer(layer, tolerance, keep_occulted)
 
         for l_id, occulted_lines in lines.items():
@@ -185,6 +186,10 @@ def occult(
 
         if keep_occulted and not removed_lines.is_empty():
             new_document.add(removed_lines, layer_id=removed_layer_id)
+    
+    for l_id, lines in all_layers.items():
+        if l_id not in layer_ids:
+            new_document.add(lines, layer_id=l_id)
 
     return new_document
 
