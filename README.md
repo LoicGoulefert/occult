@@ -47,6 +47,21 @@ with a smaller ID number.
 - With `-i` flag
 <img src="https://github.com/LoicGoulefert/occult/raw/master/img/example8.png" width="40%" height="40%">
 
+`occult -a` only performs occlusions across layers, ignoring occlusions that occur within a layer. As in `occult -i`,
+geometries in layers with a larger ID number are considered to be "on top" of geometries in layers with a smaller ID
+number. This option overrides `-i`.
+
+- Without `-a` or `-i` flags
+
+<img src="https://github.com/daniel-dominic/occult/raw/across-layers/img/example9.png" width="40%" height="40%">
+
+- With `-i` flag
+
+<img src="https://github.com/daniel-dominic/occult/raw/across-layers/img/example10.png" width="40%" height="40%">
+
+- With `-a` flag
+
+<img src="https://github.com/daniel-dominic/occult/raw/across-layers/img/example11.png" width="40%" height="40%">
 
 ### Save occulted lines
 
