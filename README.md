@@ -42,9 +42,11 @@ Geometries in layers with a larger ID number are considered to be "on top" of ge
 with a smaller ID number.
 
 - Without `-i` flag
+
 <img src="https://github.com/LoicGoulefert/occult/raw/master/img/example7.png" width="40%" height="40%">
 
 - With `-i` flag
+
 <img src="https://github.com/LoicGoulefert/occult/raw/master/img/example8.png" width="40%" height="40%">
 
 `occult -a` only performs occlusions across layers, ignoring occlusions that occur within a layer. As in `occult -i`,
