@@ -22,7 +22,7 @@ def add_to_linecollection(lc, line):
 
 
 def _occult_layer(
-    layers: Dict[int, vp.LineCollection], tolerance: float, keep_occulted: bool = False
+    layers: Dict[int, vp.LineCollection], tolerance: float, keep_occulted: bool = False, across_layers: bool = False
 ) -> Tuple[Dict[int, vp.LineCollection], vp.LineCollection]:
     """
     Perform occlusion on all provided layers. Optionally returns occulted lines
@@ -42,13 +42,13 @@ def _occult_layer(
     removed_lines = vp.LineCollection()
     new_lines = {l_id: vp.LineCollection() for l_id in layers}
 
-    line_arr = []
-    line_arr_lines = []
+    line_arr = []  # list of LineString objects paired with layer ID
+    line_arr_lines = []  # list of LineString objects from all layers without layer ID
     for l_id, lines in layers.items():
         line_arr.extend([[l_id, line] for line in lines.as_mls().geoms])
         line_arr_lines.extend([line for line in lines.as_mls().geoms])
 
-    # Build R-tree from previous geometries
+    # Build R-tree which combines the geometry of all layers
     tree = STRtree(line_arr_lines)
     index_by_id = dict((id(pt), i) for i, pt in enumerate(line_arr_lines))
 
@@ -67,8 +67,12 @@ def _occult_layer(
         if not p.is_valid:
             continue
 
-        geom_idx = [index_by_id[id(g)] for g in tree.query(p)]
-        geom_idx = [idx for idx in geom_idx if idx < i]
+        # Find all geometries that intersect with the current polygon
+        geom_idx = [index_by_id[id(g)] for g in tree.query(p)]  # the indices of all geometries that intersect with p
+        geom_idx = [idx for idx in geom_idx if idx < i]  # only consider geometries drawn prior to the current one
+        if across_layers:
+            # only consider geometries that are on a different layer
+            geom_idx = [idx for idx in geom_idx if line_arr[idx][0] != l_id]
 
         for gi in geom_idx:
             # Aggregate removed lines
@@ -116,6 +120,13 @@ def _occult_layer(
     help="Ignore layers when performing occlusion",
 )
 @click.option(
+    "-a",
+    "--across-layers",
+    is_flag=True,
+    default=False,
+    help="Only perform occlusion across layers. Ignore occlusions within any given layer",
+)
+@click.option(
     "-r",
     "--reverse",
     is_flag=True,
@@ -129,6 +140,7 @@ def occult(
     layer: Optional[Union[int, List[int]]],
     keep_occulted: bool = False,
     ignore_layers: bool = False,
+    across_layers: bool = False,
     reverse: bool = False,
 ) -> vp.Document:
     """
@@ -149,6 +161,10 @@ def occult(
         ignore_layers: If set, this flag causes occult to treat all geometries as if they
         exist on the same layer. However, all geometries in the final result
         remain on their original layer.
+        across_layers: If set, this flag causes occult to only consider occlusions that occur
+        across layers. If a geometry is occulted by another geometry on the same layer, it will
+        remain unchanged. All geometries in the final result remain on their original layer. Overrides
+        the 'ignore_layers' option.
 
     Examples:
 
@@ -168,7 +184,7 @@ def occult(
     removed_layer_id = document.free_id()
     all_layers = document.layers
 
-    if ignore_layers:
+    if ignore_layers or across_layers:
         active_layers = [{l_id: list(document.layers_from_ids([l_id]))[0] for l_id in layer_ids}]
     else:
         active_layers = [{l_id: list(document.layers_from_ids([l_id]))[0]} for l_id in layer_ids]
@@ -179,7 +195,7 @@ def occult(
                 layer[key].reverse()
 
     for layer in active_layers:
-        lines, removed_lines = _occult_layer(layer, tolerance, keep_occulted)
+        lines, removed_lines = _occult_layer(layer, tolerance, keep_occulted, across_layers)
 
         for l_id, occulted_lines in lines.items():
             new_document.add(occulted_lines, layer_id=l_id)
