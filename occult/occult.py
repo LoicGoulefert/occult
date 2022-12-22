@@ -50,7 +50,6 @@ def _occult_layer(
 
     # Build R-tree which combines the geometry of all layers
     tree = STRtree(line_arr_lines)
-    index_by_id = dict((id(pt), i) for i, pt in enumerate(line_arr_lines))
 
     for i, (l_id, line) in enumerate(line_arr):
         coords = np.array(line.coords)
@@ -68,7 +67,7 @@ def _occult_layer(
             continue
 
         # Find all geometries that intersect with the current polygon
-        geom_idx = [index_by_id[id(g)] for g in tree.query(p)]  # the indices of all geometries that intersect with p
+        geom_idx = tree.query(p, predicate='intersects')
         geom_idx = [idx for idx in geom_idx if idx < i]  # only consider geometries drawn prior to the current one
         if across_layers:
             # only consider geometries that are on a different layer
