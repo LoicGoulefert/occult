@@ -26,7 +26,7 @@ setup(
     install_requires=[
         "click",
         "numpy",
-        "shapely>=1.8.0",
+        "shapely>=2.0.0",
         "vpype>=1.9,<2.0",
     ],
     entry_points="""
