@@ -8,7 +8,7 @@ with open("LICENSE") as f:
 
 setup(
     name="vpype-occult",
-    version="0.4.0a1",
+    version="0.4.0",
     description="Occlusion plug-in for vpype",
     long_description=readme,
     long_description_content_type="text/markdown",
