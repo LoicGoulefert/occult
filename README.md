@@ -55,15 +55,15 @@ number. This option overrides `-i`.
 
 - Without `-a` or `-i` flags
 
-<img src="https://github.com/daniel-dominic/occult/raw/across-layers/img/example9.png" width="40%" height="40%">
+<img src="https://github.com/LoicGoulefert/occult/raw/master/img/example9.png" width="40%" height="40%">
 
 - With `-i` flag
 
-<img src="https://github.com/daniel-dominic/occult/raw/across-layers/img/example10.png" width="40%" height="40%">
+<img src="https://github.com/LoicGoulefert/occult/raw/master/img/example10.png" width="40%" height="40%">
 
 - With `-a` flag
 
-<img src="https://github.com/daniel-dominic/occult/raw/across-layers/img/example11.png" width="40%" height="40%">
+<img src="https://github.com/LoicGoulefert/occult/raw/master/img/example11.png" width="40%" height="40%">
 
 ### Save occulted lines
 
